@@ -11,7 +11,7 @@ public class Account {
     private static String pin;
     private static List<String> accountList = new ArrayList<>();
 
-    public Account(String cardNumber, String pin) {
+    public Account() {
         this.cardNumber = cardNumber;
         this.pin = pin;
     }
@@ -46,11 +46,27 @@ public class Account {
 
     public static void createAccount() {
 
+        Random random = new Random();
+
         String bin = "400000";
-        long number = (long) Math.floor(Math.random() * 9_000_000_000L) + 1_000_000_000L;
+        long number = random.nextInt(999_999_999 - 100_000_000 + 1) + 100_000_000;
         int pin = new Random().nextInt((9999 - 100) + 1) + 10;
-        String cardNumber = bin + String.valueOf(number);
-        Account mainObject = new Account(cardNumber,String.valueOf(pin));
+        String cardNumbers = bin + number;
+
+        int sum = 0;
+        boolean second = false;
+
+        for (int i = cardNumbers.length() - 1; i >= 0; --i) {
+            int digit = Character.getNumericValue(cardNumbers.charAt(i));
+            digit = (second = !second) ? (digit * 2) : digit;
+            digit = (digit > 9) ? (digit - 9) : digit;
+            sum += digit;
+        }
+        int lastDigit = (sum * 9) % 10;
+
+        cardNumber = cardNumbers + lastDigit;
+
+
         System.out.println("Your card has been created");
         System.out.println("Your card number:");
         System.out.println(cardNumber);
@@ -84,7 +100,6 @@ public class Account {
         }
     }
 
-
     public static void logInSuccess() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("1. Balance");
@@ -107,29 +122,6 @@ public class Account {
 
         }
     }
-
-    static boolean checkLuhn(String cardNumber) {
-        int numberDigits = cardNumber.length();
-
-        int numberSum = 0;
-        boolean isSecond = false;
-        for (int i = numberDigits - 1; i >= 0; i--) {
-
-            int d = cardNumber.charAt(i) - '0';
-
-            if (isSecond == true)
-                d = d * 2;
-
-            numberSum += d / 10;
-            numberSum += d % 10;
-
-            isSecond = !isSecond;
-        }
-        return (numberSum % 10 == 0);
-    }
-
-
-
     public static void exitAccount() {
         System.out.println("Bye!");
         System.exit(0);

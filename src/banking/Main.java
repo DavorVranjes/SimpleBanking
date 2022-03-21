@@ -3,6 +3,9 @@ package banking;
 public class Main {
 
     public static void main(String[] args) {
-        Account.menu();
+
+        Account account = new Account();
+
+        account.menu();
     }
 }
